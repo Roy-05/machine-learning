@@ -33,4 +33,13 @@ for i in range(0, len(np_arr)-1):
 
 np_arr = np_arr.transpose()
 
-print(np_arr[0])
+
+def euclidianDistance(vector1, vector2):
+    dist = 0.0
+    for i in range(len(vector1)-1):
+        dist += (vector1[i] - vector2[i])**2
+    
+    return math.sqrt(dist)
+
+for row in np_arr:
+    print(euclidianDistance(row, np_arr[0]))
