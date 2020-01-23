@@ -23,6 +23,26 @@ def getStd(dimension):
 
     return std
 
+def euclidianDistance(vector1, vector2):
+    dist = 0.0
+    for i in range(len(vector1)-1):
+        dist += (vector1[i] - vector2[i])**2
+    
+    return math.sqrt(dist)
+
+def getNeighbors(train, test_row, k):
+    distances = list()
+    for train_row in train:
+        dist = euclidianDistance(train_row, test_row)
+        distances.append([train_row, dist])
+
+    distances.sort(key=lambda row:row[1])
+    neighbors = list()
+
+    for i in range(k):
+        neighbors.append(distances[i][0])
+
+    return neighbors
 
 for i in range(0, len(np_arr)-1):
     row = np_arr[i]
@@ -34,12 +54,7 @@ for i in range(0, len(np_arr)-1):
 np_arr = np_arr.transpose()
 
 
-def euclidianDistance(vector1, vector2):
-    dist = 0.0
-    for i in range(len(vector1)-1):
-        dist += (vector1[i] - vector2[i])**2
-    
-    return math.sqrt(dist)
+neighbors = getNeighbors(np_arr, np_arr[0], 3)
 
-for row in np_arr:
-    print(euclidianDistance(row, np_arr[0]))
+for n in neighbors: 
+    print(n)
