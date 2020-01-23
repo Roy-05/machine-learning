@@ -44,6 +44,14 @@ def getNeighbors(train, test_row, k):
 
     return neighbors
 
+def predictClass(train, test_row, k):
+    neighbors = getNeighbors(np_arr, np_arr[0], 3)
+    output_vals = [row[-1] for row in neighbors]
+    prediction = max(set(output_vals), key=output_vals.count)
+
+    return prediction
+
+
 for i in range(0, len(np_arr)-1):
     row = np_arr[i]
     std = getStd(row)
@@ -54,7 +62,4 @@ for i in range(0, len(np_arr)-1):
 np_arr = np_arr.transpose()
 
 
-neighbors = getNeighbors(np_arr, np_arr[0], 3)
-
-for n in neighbors: 
-    print(n)
+print(f"Actual class {np_arr[10][-1]}, Predicted Class {prediction}")
