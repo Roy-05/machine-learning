@@ -17,13 +17,13 @@ def getMeanAndStd(training_dataset):
 
     return meanAndStd
 
-def normalizeData(training_dataset):
-    meanAndStd = getMeanAndStd(training_dataset)
-    for i in range(len(training_dataset)):
-        for j in range(len(training_dataset[i])-1):
+def normalizeData(dataset):
+    meanAndStd = getMeanAndStd(dataset)
+    for i in range(len(dataset)):
+        for j in range(len(dataset[i])-1):
             mean = meanAndStd[j]["mean"]
             std = meanAndStd[j]["std"]
-            training_dataset[i][j] = (training_dataset[i][j] - mean)/std
+            dataset[i][j] = (dataset[i][j] - mean)/std
 
 def euclidianDistance(row1, row2):
     dist = 0.0
