@@ -4,29 +4,44 @@ import math
 
 script, pendigits_training, pendigits_test = argv
 
-training_dataset = open(f"{pendigits_training}.txt", 'r')
+training_file = open(f"{pendigits_training}.txt", 'r')
+test_file = open(f"{pendigits_test}.txt", 'r')
 
-matrix = []
-for line in training_dataset:
-    matrix.append(line.split())
+training_dataset = []
+for line in training_file:
+    training_dataset.append([int(datapoint) for datapoint in line.split()])
 
-np_arr = np.array(matrix).astype(np.float)
-np_arr = np_arr.transpose()
 
-def getStd(dimension):
-    mean = np.mean(dimension)
-    sigma = 0
-    for datapoint in dimension:
-        sigma += abs((datapoint - mean)**2)
-    
-    std = math.sqrt(sigma/len(dimension))
+test_dataset = []
+for line in test_file:
+    test_dataset.append([int(datapoint) for datapoint in line.split()])
 
-    return std
+def getMeanAndStd(training_dataset):
+    meanAndStd = []
+    for i in range(len(training_dataset[0])-1):
+        column = [row[i] for row in training_dataset]
+        mean = sum(column)/len(column)
+        sigma = 0
+        for datapoint in column:
+            sigma += abs((datapoint - mean)**2)
+        
+        std = math.sqrt(sigma/len(column))
+        meanAndStd.append({"mean": mean, "std": std})
 
-def euclidianDistance(vector1, vector2):
+    return meanAndStd
+
+def normalizeData(training_dataset):
+    meanAndStd = getMeanAndStd(training_dataset)
+    for i in range(len(training_dataset)):
+        for j in range(len(training_dataset[i])-1):
+            mean = meanAndStd[j]["mean"]
+            std = meanAndStd[j]["std"]
+            training_dataset[i][j] = (training_dataset[i][j] - mean)/std
+
+def euclidianDistance(row1, row2):
     dist = 0.0
-    for i in range(len(vector1)-1):
-        dist += (vector1[i] - vector2[i])**2
+    for i in range(len(row1)-1):
+        dist += (row1[i] - row2[i])**2
     
     return math.sqrt(dist)
 
@@ -45,21 +60,11 @@ def getNeighbors(train, test_row, k):
     return neighbors
 
 def predictClass(train, test_row, k):
-    neighbors = getNeighbors(np_arr, np_arr[0], 3)
+    neighbors = getNeighbors(training_dataset, training_dataset[0], 3)
     output_vals = [row[-1] for row in neighbors]
     prediction = max(set(output_vals), key=output_vals.count)
 
     return prediction
 
 
-for i in range(0, len(np_arr)-1):
-    row = np_arr[i]
-    std = getStd(row)
-    mean = np.mean(row)
-    for j in range(0, len(row)):
-        row[j] = (row[j] - mean)/std
-
-np_arr = np_arr.transpose()
-
-
-print(f"Actual class {np_arr[10][-1]}, Predicted Class {prediction}")
+print(f"Actual class {test_dataset[0][-1]}, Predicted Class {predictClass(training_dataset, test_dataset[0], 3)}")
