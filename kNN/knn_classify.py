@@ -2,7 +2,7 @@ from sys import argv
 import numpy as np
 import math
 
-script, pendigits_training, pendigits_test = argv
+script, pendigits_training, pendigits_test, k = argv
 
 training_file = open(f"{pendigits_training}.txt", 'r')
 test_file = open(f"{pendigits_test}.txt", 'r')
@@ -45,7 +45,7 @@ def euclidianDistance(row1, row2):
     
     return math.sqrt(dist)
 
-def getNeighbors(train, test_row, k):
+def getNeighbors(train, test_row):
     distances = list()
     for train_row in train:
         dist = euclidianDistance(train_row, test_row)
@@ -54,17 +54,18 @@ def getNeighbors(train, test_row, k):
     distances.sort(key=lambda row:row[1])
     neighbors = list()
 
-    for i in range(k):
+    for i in range(int(k)):
         neighbors.append(distances[i][0])
 
     return neighbors
 
-def predictClass(train, test_row, k):
-    neighbors = getNeighbors(training_dataset, training_dataset[0], 3)
+def predictClass(train, test_row):
+    neighbors = getNeighbors(training_dataset, test_row)
     output_vals = [row[-1] for row in neighbors]
     prediction = max(set(output_vals), key=output_vals.count)
 
     return prediction
 
+for row in test_dataset:
+    print(f"Actual class {row[-1]}, Predicted Class {predictClass(training_dataset, row)}")
 
-print(f"Actual class {test_dataset[0][-1]}, Predicted Class {predictClass(training_dataset, test_dataset[0], 3)}")
