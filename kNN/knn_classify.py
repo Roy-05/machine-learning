@@ -1,23 +1,32 @@
 from sys import argv
-import math
+from math import sqrt
+from random import choice
 
-script, pendigits_training, pendigits_test, k = argv
-
-def getMeanAndStd(training_dataset):
+def getMeanAndStd(dataset):
+    """
+    Accepts a 2-d array representing the dataset.
+    Returns the mean and std for each column in the dataset.
+    """
     meanAndStd = []
-    for i in range(len(training_dataset[0])-1):
-        column = [row[i] for row in training_dataset]
+    for i in range(len(dataset[0])-1):
+        column = [row[i] for row in dataset]
         mean = sum(column)/len(column)
         sigma = 0
         for datapoint in column:
             sigma += abs((datapoint - mean))**2
         
-        std = math.sqrt(sigma/len(column))
+        std = sqrt(sigma/len(column))
         meanAndStd.append({"mean": mean, "std": std})
 
     return meanAndStd
 
 def normalizeData(dataset):
+    """
+    Normalizes each datapoint using the function
+            f(v) = (v - mean)/std
+    mean and std is obtained from function getMeanAndStd()
+    """
+
     meanAndStd = getMeanAndStd(dataset)
     for i in range(len(dataset)):
         for j in range(len(dataset[i])-1):
@@ -26,19 +35,30 @@ def normalizeData(dataset):
             dataset[i][j] = (dataset[i][j] - mean)/std
 
 def euclidianDistance(row1, row2):
+    """
+    Returns the Euclidian Distance between two vectors
+    """
+
     dist = 0.0
     for i in range(len(row1)-1):
         dist += (row1[i] - row2[i])**2
     
-    return math.sqrt(dist)
+    return sqrt(dist)
 
-def getNeighbors(training_data, test_row):
+def getNeighbors(training_data, test_row, k):
+    """
+    Returns k nearest neighbors to a vector on
+    the basis of the shortest Euclidian Distance
+    """
+
     distances = list()
     for training_row in training_data:
         dist = euclidianDistance(training_row, test_row)
         distances.append([training_row, dist])
-
+    
+    #Sort on the basis of dist
     distances.sort(key=lambda row:row[1])
+
     neighbors = list()
 
     for i in range(int(k)):
@@ -46,15 +66,33 @@ def getNeighbors(training_data, test_row):
 
     return neighbors
 
-def predictClass(training_data, test_row):
-    neighbors = getNeighbors(training_data, test_row)
+def predictClass(training_data, test_row, k):
+    """
+    Returns the predicted class on the basis
+    of the classes of the k nearest neighbors
+    """
+
+    neighbors = getNeighbors(training_data, test_row, k)
     output_vals = [row[-1] for row in neighbors]
-    prediction = max(set(output_vals), key=output_vals.count)
+    
+    counts = dict()
+
+    for i in output_vals:
+        counts[i] = counts.get(i, 0) + 1
+
+    v = [value for value in counts.values()]
+
+    #Pick a class on random if ties occur
+    prediction = choice([key for key in counts if counts[key] == max(v)])
 
     return prediction
 
-def getCounts(training_data, test_row):
-    neighbors = getNeighbors(training_data, test_row)
+def getCounts(training_data, test_row, k):
+    """
+    Returns the count of each class as a dictionary
+    to calculate accuracy
+    """
+    neighbors = getNeighbors(training_data, test_row, k)
     output_vals = [row[-1] for row in neighbors]
 
     counts = dict()
@@ -64,8 +102,9 @@ def getCounts(training_data, test_row):
     
     return counts
         
-
 def main():
+
+    script, pendigits_training, pendigits_test, k = argv
 
     training_file = open(f"{pendigits_training}.txt", 'r')
     test_file = open(f"{pendigits_test}.txt", 'r')
@@ -85,24 +124,24 @@ def main():
 
     for i in range(len(test_dataset)):
         row = test_dataset[i]
-        predicted_class = predictClass(training_dataset, row)
+        predicted_class = predictClass(training_dataset, row, k)
         true_class = row[-1]
         accuracy = 0
 
-        counts = getCounts(training_dataset, row)
+        counts = getCounts(training_dataset, row, k)
         v = [value for value in counts.values()]
     
         if(v.count(max(v)) == 1 and (predicted_class==true_class)):
             accuracy = 1
         elif(v.count(max(v)) > 1 and counts[predicted_class] == max(v)):
             accuracy = 1/v.count(max(v))
-
-        classification_accuracy += accuracy
+            
         print("ID={0:5d}, predicted={1:3d}, true={2:3d}, accuracy={3:5.2f}\n".format(i, predicted_class, true_class, accuracy))
-    
+        classification_accuracy += accuracy
+        
     classification_accuracy = classification_accuracy/len(test_dataset)
 
-    print("Classification Accuracy: {0:6.4f}".format(classification_accuracy))
+    print("classification accuracy= {0:6.4f}\n".format(classification_accuracy))
 
 if __name__ == "__main__":
     main()
