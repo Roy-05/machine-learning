@@ -4,6 +4,9 @@ This repository stores my projects and work for CSC 736: Machine Learning, at Mi
 
 ## Contents:  
  * [Assignment 1: kNN Algorithm Classification](#assignment-1-knn-algorithm-classification)  
+   * [Command Line Arguments](#command-line-arguments)  
+   * [Implementation Guidelines](#implementation-guidelines)  
+   * [Classification Stage](#classification-stage)  
    
 
 ### Assignment 1: kNN Algorithm Classification
