@@ -3,7 +3,7 @@
 This repository stores my projects and work for CSC 736: Machine Learning, at Missouri State University
 
 ## Contents:  
- * [Assignment 1: kNN Algorithm Classification](##Assignment-1:-kNN-Algorithm-Classification)  
+ * [Assignment 1: kNN Algorithm Classification](#assignment-1-knn-algorithm-classification)  
    
 
 ### Assignment 1: kNN Algorithm Classification
