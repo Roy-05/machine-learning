@@ -20,14 +20,12 @@ def getMeanAndStd(dataset):
 
     return meanAndStd
 
-def normalizeData(dataset):
+def normalizeData(meanAndStd, dataset):
     """
     Normalizes each datapoint using the function
             f(v) = (v - mean)/std
-    mean and std is obtained from function getMeanAndStd()
     """
 
-    meanAndStd = getMeanAndStd(dataset)
     for i in range(len(dataset)):
         for j in range(len(dataset[i])-1):
             mean = meanAndStd[j]["mean"]
@@ -106,8 +104,12 @@ def main():
 
     script, pendigits_training, pendigits_test, k = argv
 
-    training_file = open(f"{pendigits_training}.txt", 'r')
-    test_file = open(f"{pendigits_test}.txt", 'r')
+    #Append .txt to filename if it does not have an extension
+    pendigits_training = (pendigits_training + '.txt') if len(pendigits_training.split('.')) == 1 else pendigits_training
+    pendigits_test = (pendigits_test + '.txt') if len(pendigits_test.split('.')) == 1 else pendigits_test
+    
+    training_file = open(pendigits_training, 'r')
+    test_file = open(pendigits_test, 'r')
 
     training_dataset = []
     for line in training_file:
@@ -117,8 +119,10 @@ def main():
     for line in test_file:
         test_dataset.append([int(datapoint) for datapoint in line.split()])
     
-    normalizeData(training_dataset)
-    normalizeData(test_dataset)
+    meanAndStd = getMeanAndStd(training_dataset)
+
+    normalizeData(meanAndStd, training_dataset)
+    normalizeData(meanAndStd, test_dataset)
 
     classification_accuracy = 0
 
@@ -142,6 +146,9 @@ def main():
     classification_accuracy = classification_accuracy/len(test_dataset)
 
     print("classification accuracy= {0:6.4f}\n".format(classification_accuracy))
+
+    training_file.close()
+    test_file.close()
 
 if __name__ == "__main__":
     main()
