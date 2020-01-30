@@ -76,14 +76,14 @@ cd machine-learning/Linear\ Regression/
 
 #### Implementation of Gradient Descent Algorithm  
 
-A linear regressor is able to predict values with given inputs based on provided training dataset. In this assignment, you are required to develop a program that is able to:  
+A linear regressor is able to predict values with given inputs based on provided training dataset. In this assignment, develop a program that is able to:  
   1. Generate points in the training set.
-        * Arbitrarily define a line y = wx + b (eg. y = 2x+3) as your ground truth line.  
-        * Generate 20 random data points (randomly select 20 x and calculate 20 y accordingly) from the line defined above. The y value on each point needs to randomly add or minus a noise with the range of 10% ∗ y. For example, assuming your line is y = 2x + 3. Your first point is x = 10, y = 23 + random(23 ∗ 0.1) or y = 23 − random(23 ∗ 0.1).  
+        * Arbitrarily define a line `y = wx + b (eg. y = 2x+3)` as your ground truth line.  
+        * Generate 20 random data points (randomly select 20 x and calculate 20 y accordingly) from the line defined above. The y value on each point needs to randomly add or minus a noise with the range of `10% ∗ y`. For example, assuming your line is `y = 2x + 3`. Your first point is `x = 10, y = 23 + random(23 ∗ 0.1) or y = 23 − random(23 ∗ 0.1)`.  
         * Visualize the line in green and the 20 points (filled circles) on a graphic user interface.  
   2. Implement a linear regression with the gradient descent learning algorithm.
         * Randomly initialize the weight and bias to a double within (0, 1).  
-        * Set your learning rate η = 0.000001
+        * Set your learning rate *η = 0.000001*
         * Train your linear regressor by the gradient descent learning algorithm with the provided training data generated from the previous step.  
   3. Visualize the line represented by the current weights at the end of each epoch on
 GUI. 
