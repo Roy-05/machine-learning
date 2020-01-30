@@ -1,6 +1,5 @@
 from random import randint, random
 
-
 x_points = []
 y_points = []
 w = randint(1, 5)
