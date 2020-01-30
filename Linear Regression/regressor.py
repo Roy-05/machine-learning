@@ -6,8 +6,8 @@ y_points = []
 w = randint(1, 5)
 b = randint(1, 10)
 datapoints = 20
-epochs = 50
-learning_rate = 0.0001
+epochs = 1000
+learning_rate = 0.000001
 
 for i in range(datapoints):
     x_points.append(randint(1,50))

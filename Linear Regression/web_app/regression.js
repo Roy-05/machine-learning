@@ -55,6 +55,7 @@ for(let i=0; i<epochs; i++){
 }
 
 points.forEach(point => {
+    ctx.lineWidth = 2
     ctx.beginPath();       
     ctx.moveTo(point["x0"],canvas.height - point["y0"]);    
     ctx.lineTo(point["x1"]*6,canvas.height - point["y1"]*5 );  
