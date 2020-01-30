@@ -5,11 +5,11 @@ This repository stores my projects and work for CSC 736: Machine Learning, at Mi
 ## Contents:  
  1. [Assignment 1: kNN Algorithm Classification](#assignment-1-knn-algorithm-classification)  
     * [Command Line Arguments](#command-line-arguments)  
-    * [Implementation Guidelines](#implementation-guidelines)  
+    * [Implementation of kNN Algoritm](#implementation-of-knn-algorithm)  
     * [Classification Stage](#classification-stage)  
    
  2. [Assignment 2: Linear Regression using Gradient Descent Algorithm](#assignment-2-linear-regression-using-gradient-descent-algorithm) 
-    * [Implementation Guidelines](#implementation-guidelines)  
+    * [Implementation of Gradient Descent Algoritm](#implementation-of-gradient-descent-algorithm)  
    
 #  
 
@@ -36,7 +36,7 @@ The arguments provide to the program the following information:
   
 The training and test files will follow the same format as the text files in the [UCI datasets directory](https://archive.ics.uci.edu/ml/index.php).  
 
-#### Implementation Guidelines  
+#### Implementation of kNN Algorithm  
 
 1. Each dimension should be normalized, separately from all other dimensions. Specifically, for both training and test objects, each dimension should be transformed using
 function: ```F(v) = (v−mean)/std``` , using the mean and std of the values of that dimension on
@@ -74,7 +74,7 @@ To access the program(s), clone the repository and enter the kNN directory as:
 cd machine-learning/Linear\ Regression/
 ```  
 
-#### Implementation Guidelines  
+#### Implementation of Gradient Descent Algorithm  
 
 A linear regressor is able to predict values with given inputs based on provided training dataset. In this assignment, you are required to develop a program that is able to:  
   1. Generate points in the training set.
