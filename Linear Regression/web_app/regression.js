@@ -14,22 +14,27 @@ canvas.width = 600;
 canvas.height = 600;      
 
 
-
-for(let i=0; i<datapoints; i++){
-    x_points.push(randInt(1,50));
-    
-    y = w * x_points[i] + b;
-    y_points.push(y + (-1)**randInt(0,1) * randInt(0,Math.round(0.1 * y)));
+function generateDataPoints(){
+    for(let i=0; i<datapoints; i++){
+        x_points.push(randInt(1,50));
+        
+        y = w * x_points[i] + b;
+        y_points.push(y + (-1)**randInt(0,1) * randInt(0,Math.round(0.1 * y)));
+    }
 }
 
+generateDataPoints()
 
-let start_x = Math.min(...x_points) - 10,
+
+let start_x = Math.min(...x_points),
     start_y = start_x * w + b,
     end_x = Math.max(...x_points),
     end_y = end_x * w + b,
     w1 = Math.random(),
     b1 = Math.random(),
     points = [];
+
+drawLine(ctx, start_x, end_x, start_y, end_y, "green");
 
 for(let i=0; i<epochs; i++){
 
@@ -38,9 +43,6 @@ for(let i=0; i<epochs; i++){
 
     w1 += (2/datapoints) * dW * learning_rate
     b1 += (2/datapoints) * dB * learning_rate
-
-    start_x = Math.min(...x_points)-10
-    start_y = start_x * w1 + b1
 
     end_x = Math.max(...x_points)
     end_y = end_x * w1 + b1
@@ -55,16 +57,18 @@ for(let i=0; i<epochs; i++){
 }
 
 points.forEach(point => {
-    ctx.lineWidth = 2
-    ctx.beginPath();       
-    ctx.moveTo(point["x0"],canvas.height - point["y0"]);    
-    ctx.lineTo(point["x1"]*6,canvas.height - point["y1"]*5 );  
-    ctx.strokeStyle = "red"
-    ctx.stroke();      
+    // drawLine(ctx, point["x0"],point["x1"], point["y0"], point["y1"], "red")
 });
 
 
-
+function drawLine(ctx, x0, x1, y0, y1, color) {
+    ctx.lineWidth = 2
+    ctx.beginPath();       
+    ctx.moveTo(x0, canvas.height - y0);    
+    ctx.lineTo(x1, canvas.height - y1);  
+    ctx.strokeStyle = color
+    ctx.stroke();      
+}
 
 function get_accumulated_errors(w, b) {
 
