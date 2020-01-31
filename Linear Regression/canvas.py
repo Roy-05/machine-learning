@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from random import random
 
-fig = plt.figure()
+fig = plt.figure(num = "Linear Regression with Gradient Descent Algorithm")
 
 X0 = min(rg.x_points) 
 Y0 = X0 * rg.w + rg.b
@@ -27,11 +27,12 @@ ax.plot(rg.x_points, rg.y_points, 'ro', zorder = 2)
 points = []
 
 for i in range(rg.epochs):
-    dW, dB = rg.get_accumulated_errors(w1, b1)
+    dW, dB, mse = rg.get_accumulated_errors_and_mse(w1, b1)
     w1 += (2/rg.datapoints) * dW * rg.learning_rate
     b1 += (2/rg.datapoints) * dB * rg.learning_rate
 
     points.append([[X0, Xn], [Y0, Yn]])
+    print(f"Epoch {0:4f}: Mean Squared Error: {1:f}".format(i+1,mse))
     Yn = Xn * w1 + b1
 
 def animate(i):
@@ -41,6 +42,6 @@ def animate(i):
     else:
         line.set_data(points[i][0], points[i][1])
 
-anim = FuncAnimation(fig, animate, frames = rg.epochs+1, interval = 10)
+anim = FuncAnimation(fig, animate, frames = rg.epochs+1, interval = 50)
 
 plt.show()
