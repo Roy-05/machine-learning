@@ -5,7 +5,7 @@ y_points = []
 w = randint(1, 5)
 b = randint(1, 10)
 datapoints = 20
-epochs = 100
+epochs = 200
 learning_rate = 0.00001
 
 for i in range(datapoints):

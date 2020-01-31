@@ -32,16 +32,20 @@ for i in range(rg.epochs):
     b1 += (2/rg.datapoints) * dB * rg.learning_rate
 
     points.append([[X0, Xn], [Y0, Yn]])
-    print(f"Epoch {0:4f}: Mean Squared Error: {1:f}".format(i+1,mse))
+    print("Epoch:{0:4d} and Mean Squared Error: {1:6.8f}".format(i+1,mse))
     Yn = Xn * w1 + b1
 
 def animate(i):
     if(i>=len(points)):
-        plt.pause(1.5)
+        plt.pause(1)
         plt.close('all')
     else:
         line.set_data(points[i][0], points[i][1])
 
-anim = FuncAnimation(fig, animate, frames = rg.epochs+1, interval = 50)
+anim = FuncAnimation(
+        fig, 
+        animate, 
+        frames = rg.epochs+1, 
+        interval = 100)
 
 plt.show()
