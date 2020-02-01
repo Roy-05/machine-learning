@@ -31,9 +31,9 @@ for i in range(rg.epochs):
     w1 += (2/rg.datapoints) * dW * rg.learning_rate
     b1 += (2/rg.datapoints) * dB * rg.learning_rate
 
-    points.append([[X0, Xn], [Y0, Yn]])
     print("Epoch:{0:4d} and Mean Squared Error: {1:6.8f}".format(i+1,mse))
     Yn = Xn * w1 + b1
+    points.append([[X0, Xn], [Y0, Yn]])
 
 def animate(i):
     if(i>=len(points)):
