@@ -15,21 +15,27 @@ for i in range(20):
     x = randint(50,950)
     y = randint(50,950)
     pt_class = 1 if y - m*x - c >= 0 else -1
-    dataset.append([x, y, pt_class])
+    dataset.append([1, x, y, pt_class])
 
 def activate(s):
-    return 1 if s >= 0 else -1
+    return 1.00 if s >= 0.00 else -1.00
 
 def feedForward(row):
     sigma = weights[0]
-    for weight,x in zip(weights[1:], row):
+    for weight,x in zip(weights, row):
         sigma += weight*x
     
     return activate(sigma)
 
-for row in dataset:
-    e = feedForward(row)
-    print(f"Expect: {row[-1]} Actual: {e}")
-
-
+def train(row):
+    output = feedForward(row)
+    for i in range(len(weights)):
+        weights[i] += learning_rate * (row[-1] - output) * row[i]
+ 
+for i in range(3):
+    for row in dataset:
+        e = feedForward(row)
+        train(row)
+        print(f"Expect: {row[-1]:2} Actual: {e:2}\t{row[-1]==e}")
+    print("\n\n")
 
