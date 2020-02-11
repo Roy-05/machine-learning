@@ -14,7 +14,7 @@ print(weights)
 for i in range(20):
     x = randint(50,950)
     y = randint(50,950)
-    pt_class = 1 if y - m*x - c >= 0 else -1
+    pt_class = 1.00 if y - m*x - c >= 0.00 else -1.00
     dataset.append([1, x, y, pt_class])
 
 def activate(s):
@@ -31,11 +31,4 @@ def train(row):
     output = feedForward(row)
     for i in range(len(weights)):
         weights[i] += learning_rate * (row[-1] - output) * row[i]
- 
-for i in range(3):
-    for row in dataset:
-        e = feedForward(row)
-        train(row)
-        print(f"Expect: {row[-1]:2} Actual: {e:2}\t{row[-1]==e}")
-    print("\n\n")
 
