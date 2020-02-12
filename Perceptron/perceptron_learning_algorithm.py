@@ -1,24 +1,29 @@
 from random import random, randint, uniform
 import math
 
-#Slope ranges from  PI/12 - 5PI/12
-m = uniform(math.pi/12, 5*math.pi/12)
+#Slope ranges from  PI/6 - PI/3
+m = uniform(math.pi/6, math.pi/3)
 c = randint(-50,50)
+
 learning_rate = 0.0001
-datapoints = 50
+datapoints = 20
 epochs = 0
 points = []
-
 dataset = []
-weights = [random(), random(), random()] #Initialize with Bias
 
-#Generatate Datapoints
+#Initialize weights with bias [i.e. w1 = bias]
+weights = [random(), random(), random()] 
+
+#Generatate dataset
 for i in range(datapoints):
     x = randint(50,950)
     y = randint(50,950)
     pt_class = 1.0 if y - m*x - c >= 0.00 else -1.0
     dataset.append([1, x, y, pt_class])
 
+
+#Activation function is a threshold function.
+#Will use a sigmoid function in the future, maybe.
 def activate(s):
     return 1.0 if s >= 0.0 else -1.0
 
@@ -37,8 +42,11 @@ def train(row):
 def getCurrentPoints(points):
     """
     Derived from w1x1 + w2x2 + w3x3 = 0
+    where w1 = bias and x1 = 1
+    plugging x2 = 0, x3 = - w1x1/w3
+    and x2 = 1000, x3 = - (w2x2 + w1x1)/w3
     """
-    
+
     x0 = 0
     y0 = - weights[0]/weights[2]
     xn = 1000
@@ -51,8 +59,6 @@ while(True):
     converged = True
     misclassify = 0
 
-    getCurrentPoints(points)
-
     for row in dataset:
         classify = feedForward(row[0:3])
         train(row)
@@ -62,6 +68,7 @@ while(True):
             converged = False
             misclassify += 1
 
+    getCurrentPoints(points) 
     print(f"\nEpoch:{epochs} misclassified:{misclassify}\n")
     if(converged):
         break 
