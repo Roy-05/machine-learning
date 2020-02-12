@@ -11,6 +11,9 @@ This repository stores my projects and work for CSC 736: Machine Learning, at Mi
  2. [Assignment 2: Linear Regression using Gradient Descent Algorithm](#assignment-2-linear-regression-using-gradient-descent-algorithm) 
     * [Implementation of Gradient Descent Algoritm](#implementation-of-gradient-descent-algorithm)  
    
+ 3. [Assignment 3: Perceptron Learning Algorithm](#assignment-3-perceptron-learning-algorithm)  
+    * [Implementation of Perceptron Learning Algorithm](#implementation-of-perceptron-learning-algorithm)
+   
 #  
 
 ### Assignment 1: kNN Algorithm Classification
@@ -68,7 +71,7 @@ of the classes that tied for best, the accuracy is 0.
 
 ### Assignment 2: Linear Regression using Gradient Descent Algorithm
 
-To access the program(s), clone the repository and enter the kNN directory as:
+To access the program(s), clone the repository and enter the Linear Regression directory as:
 
 ```
 cd machine-learning/Linear\ Regression/
@@ -83,9 +86,35 @@ A linear regressor is able to predict values with given inputs based on provided
         * Visualize the line in green and the 20 points (filled circles) on a graphic user interface.  
   2. Implement a linear regression with the gradient descent learning algorithm.
         * Randomly initialize the weight and bias to a double within (0, 1).  
-        * Set your learning rate *η = 0.000001*
+        * Set your learning rate *η = 0.00001*
         * Train your linear regressor by the gradient descent learning algorithm with the provided training data generated from the previous step.  
   3. Visualize the line represented by the current weights at the end of each epoch on
 GUI. 
 
-  4. Train your linear regression model for at least 500 epochs.
+  4. Train your linear regression model for at least 50 epochs. 
+  
+### Assignment 3: Perceptron Learning Algorithm  
+
+A perceptron is able to classify linear separable dataset. To access the program(s), clone the repository and enter the Linear Regression directory as:
+
+```
+cd machine-learning/Perceptron/
+```  
+
+#### Implementation of Perceptron Learning Algorithm  
+
+1. Generate points in the training set:    
+
+   * Arbitrarily define a line (eg. y = ax+b or ax+by+c=0)  
+   * Generate 20 random data points on a 1000 by 1000 size canvas. Based on the line in the previous step, assign the class (1 or -1) to each points.
+   * Visualize the line in green and the points (circles filled or unfilled) on a graphic user interface.
+  
+2. Implement a perceptron and perceptron learning algorithm:
+
+   * Randomly initialize the weights to a double within (0, 1).  
+   * Set your learning rate to 0.0001  
+   * Train your perceptron by the perceptron learning algorithm with the provided training data generated from the previous step.  
+   * Define “epoch” as one iteration of training all the training data one time.  
+   * Visualize the line represented by the current weights at the end of each epoch on GUI.    
+   * Output the number of misclassification on the training data at the end of each epoch.  
+   * Terminate the training process if all the training data are correctly classified by the perceptron.  
