@@ -7,14 +7,15 @@ fig = plt.figure(num = "Perceptron Learning Algrotihm")
 
 ax = plt.axes(xlim=[0, 1000], ylim=[0, 1000])
 
-ax.plot([0, 1000], [pla.c, pla.m*1000 + pla.c],  color = "green", lw=2)
+ax.plot([0, 1000], [pla.c, pla.m*1000 + pla.c],  color = "green", lw=3, zorder = 1)
 
 for point in pla.dataset:
-    facecolor = "k" if point[3] == 1 else "none"        #k = black
-    ax.scatter(point[1], point[2], facecolor = facecolor, edgecolor='k')
+    #k = black
+    facecolor = "k" if point[3] == 1 else "none"        
+    ax.scatter(point[1], point[2], facecolor = facecolor, edgecolor='k', zorder = 2)
 
 
-[line] = ax.plot([],[],lw=3, color = "red")
+[line] = ax.plot([],[],lw=3, color = "red", zorder=1)
 
 def animate(i):
     if(i>=len(pla.points)):
