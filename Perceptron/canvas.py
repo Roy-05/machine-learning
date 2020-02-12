@@ -18,7 +18,7 @@ for point in pla.dataset:
 
 def animate(i):
     if(i>=len(pla.points)):
-        plt.pause(2)
+        plt.pause(1)
         plt.close('all')
     else:
         line.set_data(pla.points[i][0], pla.points[i][1])
@@ -27,6 +27,6 @@ anim = FuncAnimation(
         fig, 
         animate, 
         frames = pla.epochs+1, 
-        interval = 200)
+        interval = 250)
 
 plt.show()
