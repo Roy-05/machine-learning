@@ -23,7 +23,6 @@ for i in range(datapoints):
 
 
 #Activation function is a threshold function.
-#Will use a sigmoid function in the future, maybe.
 def activate(s):
     return 1.0 if s >= 0.0 else -1.0
 
@@ -62,14 +61,13 @@ while(True):
     for row in dataset:
         classify = feedForward(row[0:3])
         train(row)
-    
-        print(f"Expect: {row[-1]:4} Actual: {classify:4}  {row[-1]==classify}")
+
         if(row[-1] != classify):
             converged = False
             misclassify += 1
 
     getCurrentPoints(points) 
-    print(f"\nEpoch:{epochs} misclassified:{misclassify}\n")
+    print(f"Epoch:{epochs:6} misclassified:{misclassify:2}\n")
     if(converged):
         break 
    
