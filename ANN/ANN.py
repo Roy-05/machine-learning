@@ -7,7 +7,7 @@ filename = os.getcwd() + r'/ANN/data/optdigits-3.tra'
 
 neural_net, dataset, training_set, test_set = [],[],[],[]
 learning_rate = 0.01
-epochs = 50
+epochs = 100
 
 
 def create_dataset(filename):
@@ -86,7 +86,7 @@ def back_propagation(expected):
 
         for j in range(len(layer)):
             neuron = layer[j]
-            neuron['delta'] = errors[j] * activate(neuron['output'])
+            neuron['delta'] = errors[j] * sigmoid_prime(neuron['output'])
 
 
 def update_weights(row):
@@ -103,7 +103,7 @@ def update_weights(row):
 def train_nn():
     for epoch in range(epochs):
         for row in dataset:
-            outputs = forward_propagation(row)
+            forward_propagation(row)
 
             expected_vector = [0.1, 0.1, 0.1, 0.1]
             expected_vector[row[-1]] = 0.9
@@ -123,7 +123,7 @@ create_dataset(filename)
 
 def back_propagate_driver():
     # Initialize our neural net by invoking this function
-    initialize_neural_network(64, 2, 4)
+    initialize_neural_network(64, 8, 4)
     train_nn()
     predictions = []
     for row in dataset:
@@ -131,8 +131,12 @@ def back_propagate_driver():
         predictions.append(prediction)
     return predictions
 
+
 predictions = back_propagate_driver()
 actual = [row[-1] for row in dataset]
-
+accuracy = 0.0
 for i in range(len(dataset)):
+    accuracy += 1.0 if actual[i] == predictions[i] else 0.0
     print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
+
+print(accuracy/len(dataset))
