@@ -7,7 +7,7 @@ filename = os.getcwd() + r'/ANN/data/optdigits-3.tra'
 
 neural_net, dataset, training_set, test_set = [],[],[],[]
 learning_rate = 0.01
-epochs = 100
+epochs = 50
 
 
 def create_dataset(filename):
@@ -70,7 +70,6 @@ def back_propagation(expected):
     for i in range(len(neural_net)-1, -1, -1):
         layer = neural_net[i]
         errors = []
-        q = len(layer)
 
         # Case: Output layer
         if i == (len(neural_net) - 1):
@@ -97,14 +96,14 @@ def update_weights(row):
             inputs = [neuron['output'] for neuron in neural_net[i-1]]
         for neuron in neural_net[i]:
             for j in range(len(inputs)):
-                neuron['weights'][j] += learning_rate * neuron['delta'] * inputs[j]
-            neuron['weights'][-1] += learning_rate * neuron['delta'] # Update Bias
+                neuron['w'][j] += learning_rate * neuron['delta'] * inputs[j]
+            neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
 
 
 def train_nn():
     for epoch in range(epochs):
         for row in dataset:
-            # outputs = forward_propagation(row)
+            outputs = forward_propagation(row)
 
             expected_vector = [0.1, 0.1, 0.1, 0.1]
             expected_vector[row[-1]] = 0.9
@@ -120,9 +119,20 @@ def predict(row):
 # Create our dataset from the file by invoking this function
 create_dataset(filename)
 
-# Initialize our neural net by invoking this function
-initialize_neural_network(64, 2, 4)
 
-for row in dataset:
-    prediction = predict(row)
-    print(f"Expected:{row[-1]:3d} Actual:{prediction:3d} ")
+
+def back_propagate_driver():
+    # Initialize our neural net by invoking this function
+    initialize_neural_network(64, 2, 4)
+    train_nn()
+    predictions = []
+    for row in dataset:
+        prediction = predict(row)
+        predictions.append(prediction)
+    return predictions
+
+predictions = back_propagate_driver()
+actual = [row[-1] for row in dataset]
+
+for i in range(len(dataset)):
+    print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
