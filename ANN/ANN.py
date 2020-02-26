@@ -107,6 +107,7 @@ def update_weights(row):
                 neuron['w'][j] += learning_rate * neuron['delta'] * inputs[j]
             neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
 
+
 # Train nn across epochs
 def train_nn(dataset, arr):
     for epoch in range(epochs):
@@ -160,19 +161,13 @@ def main():
 
     train_nn(training_set, training_mse)
 
-
-    
-    predictions = []
-    for row in test_dataset:
-        prediction = predict(row)
-        predictions.append(prediction)
-    
-    actual = [row[-1] for row in test_dataset]
     accuracy = 0.0
-    for i in range(len(test_dataset)):
-        accuracy += 1.0 if actual[i] == predictions[i] else 0.0
-        # print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
+    for row in test_dataset:
+        actual = row[-1]
+        predicted = predict(row)
+        accuracy += 1.0 if actual == predicted else 0.0
+        # print(f"Expected:{actual:2d} Actual:{predicted:2d}")
 
-    print(f"\nAccuracy: {accuracy/len(test_dataset):2f}\n")
+    print(f"\nAccuracy: {accuracy/len(test_dataset):2.5f}\n")
     
 main()
