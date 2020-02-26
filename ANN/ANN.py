@@ -4,13 +4,17 @@ from random import random
 
 
 training_file = os.getcwd() + r'/ANN/data/optdigits-3.tra'
+test_file     = os.getcwd() + r'/ANN/data/optdigits-3.tes'
 
-neural_net, dataset, training_set, test_set, mse_points = [],[],[],[], []
+neural_net = []
+training_dataset, test_dataset = [],[]
+training_set, validation_set = [],[]
+training_mse, validation_mse = [],[]
 learning_rate = 0.5
-epochs = 100
+epochs = 150
 
-
-def create_dataset(filename):
+# Create dataset from file
+def create_dataset(filename, dataset):
     f = open(filename, 'r')
     for line in f:
         line = line.rstrip('\n').split(',')
@@ -19,6 +23,7 @@ def create_dataset(filename):
     f.close()
 
 
+# Create initial nn with 1 hidden layer and 1 output layer
 def initialize_neural_network(n_inputs, n_hidden, n_outputs):
     """
     n_inputs: number of neurons in input layer\n
@@ -61,11 +66,13 @@ def forward_propagation(row):
         inputs = new_inputs
     return inputs
 
+
 # Calculate the derivative
 def sigmoid_prime(y):
     return y * (1.0 - y)
 
 
+# Back propagate errors
 def back_propagation(expected):
     for i in reversed(range(len(neural_net))):
         layer = neural_net[i]
@@ -89,6 +96,7 @@ def back_propagation(expected):
             neuron['delta'] = errors[j] * sigmoid_prime(neuron['output'])
 
 
+# Update weights on the basis of results from back propagation
 def update_weights(row):
     for i in range(len(neural_net)):
         inputs = row[:-1]
@@ -99,23 +107,25 @@ def update_weights(row):
                 neuron['w'][j] += learning_rate * neuron['delta'] * inputs[j]
             neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
 
-
-def train_nn():
+# Train nn across epochs
+def train_nn(dataset, arr):
     for epoch in range(epochs):
         for row in dataset:
             forward_propagation(row)
 
-            expected_vector = [0.001, 0.001, 0.001, 0.001]
-            expected_vector[row[-1]] = 0.999
+            expected_vector = [0.1, 0.1, 0.1, 0.1]
+            expected_vector[row[-1]] = 0.9
 
             back_propagation(expected_vector)
             update_weights(row)
 
         if (epoch%10 == 0):
-            mse = mean_square_error()
-            print(f"Mean Squared Error: {mse}")
+            mean_square_error(dataset, arr)
+            # print(f"Mean Squared Error: {mse}")
 
-def mean_square_error():
+
+# Get mse for the current epoch
+def mean_square_error(dataset, arr):
     mse = 0.0
     for row in dataset:
         expected_vector = [0.1, 0.1, 0.1, 0.1]
@@ -124,33 +134,45 @@ def mean_square_error():
             mse += (expected_vector[i] - neural_net[1][i]['output'])**2
 
     mse = round(mse/len(dataset), 10)
-    mse_points.append(mse)
-    return mse
+    arr.append(mse)
+    # return mse
 
+# Make predictions after adjusting weights
 def predict(row):
     outputs = forward_propagation(row)
     return outputs.index(max(outputs))
 
 
+# Driver code
 def main():
 
-    # Create our dataset from the file by invoking this function
-    create_dataset(training_file)
+    # Create our training dataset from the file by invoking this function
+    create_dataset(training_file, training_dataset)
 
+    # Create our test dataset from the file by invoking this function
+    create_dataset(test_file, test_dataset)
+    
     # Initialize our neural net by invoking this function
     initialize_neural_network(64, 8, 4)
-    train_nn()
+    training_rows = round(len(training_dataset)*0.8)
+    training_set = training_dataset[:training_rows]
+    # validation_set = training_dataset[training_rows:]
 
+    train_nn(training_set, training_mse)
+
+
+    
     predictions = []
-    for row in dataset:
+    for row in test_dataset:
         prediction = predict(row)
         predictions.append(prediction)
     
-    actual = [row[-1] for row in dataset]
+    actual = [row[-1] for row in test_dataset]
     accuracy = 0.0
-    for i in range(len(dataset)):
+    for i in range(len(test_dataset)):
         accuracy += 1.0 if actual[i] == predictions[i] else 0.0
         # print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
 
-    print(f"\nAccuracy: {accuracy/len(dataset):2f}")
+    print(f"\nAccuracy: {accuracy/len(test_dataset):2f}\n")
+    
 main()
