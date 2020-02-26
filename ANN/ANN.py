@@ -5,8 +5,8 @@ from random import random
 
 filename = os.getcwd() + r'/ANN/data/optdigits-3.tra'
 
-neural_net, dataset, training_set, test_set = [],[],[],[]
-learning_rate = 0.01
+neural_net, dataset, training_set, test_set, mse_points = [],[],[],[], []
+learning_rate = 0.4
 epochs = 100
 
 
@@ -14,7 +14,7 @@ def create_dataset(filename):
     f = open(filename, 'r')
     for line in f:
         line = line.rstrip('\n').split(',')
-        
+        # Normalize Data
         dataset.append([(int(line[i])/16.0) if i != len(line) - 1 else int(line[i]) for i in range(len(line))])
     f.close()
 
@@ -51,9 +51,9 @@ def feedForward(weights, inputs):
 
 #Forward propagate input to the network output
 def forward_propagation(row):
+    inputs = row
     for layer in neural_net:
-        new_inputs = list()
-        inputs = row
+        new_inputs = []
         for neuron in layer:
             y = feedForward(neuron['w'], inputs)
             neuron['output'] = activate(y)
@@ -61,13 +61,13 @@ def forward_propagation(row):
         inputs = new_inputs
     return inputs
 
-# Calculate the derivative of a neuron output
+# Calculate the derivative
 def sigmoid_prime(y):
     return y * (1.0 - y)
 
 
 def back_propagation(expected):
-    for i in range(len(neural_net)-1, -1, -1):
+    for i in reversed(range(len(neural_net))):
         layer = neural_net[i]
         errors = []
 
@@ -102,41 +102,56 @@ def update_weights(row):
 
 def train_nn():
     for epoch in range(epochs):
+        if (epoch%10 == 0 and epoch !=0):
+            mse = mean_square_error()
+            print(f"Mean Squared Error: {mse}")
+
         for row in dataset:
             forward_propagation(row)
 
-            expected_vector = [0.1, 0.1, 0.1, 0.1]
-            expected_vector[row[-1]] = 0.9
+            expected_vector = [0.001, 0.001, 0.001, 0.001]
+            expected_vector[row[-1]] = 0.999
 
             back_propagation(expected_vector)
             update_weights(row)
 
+def mean_square_error():
+    mse = 0.0
+    for row in dataset:
+        expected_vector = [0.1, 0.1, 0.1, 0.1]
+        expected_vector[row[-1]] = 0.9
+        for i in range(4):
+            mse += (expected_vector[i] - neural_net[1][i]['output'])**2
+
+    mse /= len(dataset)
+    mse_points.append([len(mse_points), mse])
+    return mse
 
 def predict(row):
     outputs = forward_propagation(row)
     return outputs.index(max(outputs))
 
-# Create our dataset from the file by invoking this function
-create_dataset(filename)
 
+def main():
 
+    # Create our dataset from the file by invoking this function
+    create_dataset(filename)
 
-def back_propagate_driver():
     # Initialize our neural net by invoking this function
     initialize_neural_network(64, 8, 4)
     train_nn()
+
     predictions = []
     for row in dataset:
         prediction = predict(row)
         predictions.append(prediction)
-    return predictions
+    
+    actual = [row[-1] for row in dataset]
+    accuracy = 0.0
+    for i in range(len(dataset)):
+        accuracy += 1.0 if actual[i] == predictions[i] else 0.0
+        # print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
 
-
-predictions = back_propagate_driver()
-actual = [row[-1] for row in dataset]
-accuracy = 0.0
-for i in range(len(dataset)):
-    accuracy += 1.0 if actual[i] == predictions[i] else 0.0
-    print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
-
-print(accuracy/len(dataset)_
+    print(f"\nAccuracy: {accuracy/len(dataset):2f}")
+    print(mse_points)
+main()
