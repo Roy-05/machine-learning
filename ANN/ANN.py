@@ -3,10 +3,10 @@ from math import exp
 from random import random
 
 
-filename = os.getcwd() + r'/ANN/data/optdigits-3.tra'
+training_file = os.getcwd() + r'/ANN/data/optdigits-3.tra'
 
 neural_net, dataset, training_set, test_set, mse_points = [],[],[],[], []
-learning_rate = 0.4
+learning_rate = 0.5
 epochs = 100
 
 
@@ -102,10 +102,6 @@ def update_weights(row):
 
 def train_nn():
     for epoch in range(epochs):
-        if (epoch%10 == 0 and epoch !=0):
-            mse = mean_square_error()
-            print(f"Mean Squared Error: {mse}")
-
         for row in dataset:
             forward_propagation(row)
 
@@ -115,6 +111,10 @@ def train_nn():
             back_propagation(expected_vector)
             update_weights(row)
 
+        if (epoch%10 == 0):
+            mse = mean_square_error()
+            print(f"Mean Squared Error: {mse}")
+
 def mean_square_error():
     mse = 0.0
     for row in dataset:
@@ -123,8 +123,8 @@ def mean_square_error():
         for i in range(4):
             mse += (expected_vector[i] - neural_net[1][i]['output'])**2
 
-    mse /= len(dataset)
-    mse_points.append([len(mse_points), mse])
+    mse = round(mse/len(dataset), 10)
+    mse_points.append(mse)
     return mse
 
 def predict(row):
@@ -135,7 +135,7 @@ def predict(row):
 def main():
 
     # Create our dataset from the file by invoking this function
-    create_dataset(filename)
+    create_dataset(training_file)
 
     # Initialize our neural net by invoking this function
     initialize_neural_network(64, 8, 4)
@@ -153,5 +153,4 @@ def main():
         # print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
 
     print(f"\nAccuracy: {accuracy/len(dataset):2f}")
-    print(mse_points)
 main()
