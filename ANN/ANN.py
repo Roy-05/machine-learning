@@ -6,9 +6,9 @@ from random import random
 filename = os.getcwd() + r'/ANN/data/optdigits-3.tra'
 
 neural_net, dataset, training_set, test_set = [],[],[],[]
-
+learning_rate = 0.01
 epochs = 100
-expected = [0,1,2,3]
+
 
 def create_dataset(filename):
     f = open(filename, 'r')
@@ -50,7 +50,7 @@ def feedForward(weights, inputs):
 
 
 #Forward propagate input to the network output
-def forwardPropagation(row):
+def forward_propagation(row):
     for layer in neural_net:
         new_inputs = list()
         inputs = row
@@ -66,7 +66,7 @@ def sigmoid_prime(y):
     return y * (1.0 - y)
 
 
-def backPropagation():
+def back_propagation(expected):
     for i in range(len(neural_net)-1, -1, -1):
         layer = neural_net[i]
         errors = []
@@ -90,18 +90,39 @@ def backPropagation():
             neuron['delta'] = errors[j] * activate(neuron['output'])
 
 
+def update_weights(row):
+    for i in range(len(neural_net)):
+        inputs = row[:-1]
+        if(i != 0):
+            inputs = [neuron['output'] for neuron in neural_net[i-1]]
+        for neuron in neural_net[i]:
+            for j in range(len(inputs)):
+                neuron['weights'][j] += learning_rate * neuron['delta'] * inputs[j]
+            neuron['weights'][-1] += learning_rate * neuron['delta'] # Update Bias
+
+
+def train_nn():
+    for epoch in range(epochs):
+        for row in dataset:
+            # outputs = forward_propagation(row)
+
+            expected_vector = [0.1, 0.1, 0.1, 0.1]
+            expected_vector[row[-1]] = 0.9
+
+            back_propagation(expected_vector)
+            update_weights(row)
+
+
+def predict(row):
+    outputs = forward_propagation(row)
+    return outputs.index(max(outputs))
+
 # Create our dataset from the file by invoking this function
 create_dataset(filename)
 
 # Initialize our neural net by invoking this function
 initialize_neural_network(64, 2, 4)
 
-#Test
-row = dataset[0][:-1]
-output = forwardPropagation(row)
-
-# Backpropagate and update weights
-backPropagation()
-
-for layer in neural_net:
-    print(layer)
+for row in dataset:
+    prediction = predict(row)
+    print(f"Expected:{row[-1]:3d} Actual:{prediction:3d} ")
