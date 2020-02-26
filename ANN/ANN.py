@@ -41,7 +41,7 @@ def activate(y):
 
 
 def feedForward(weights, inputs):
-    # Initialize with bias which is the last element in the weights list
+    # Initialize with bias
     sigma = weights[-1]
     for i in range(len(weights)-1):
         sigma += weights[i]*inputs[i]
@@ -139,4 +139,4 @@ for i in range(len(dataset)):
     accuracy += 1.0 if actual[i] == predictions[i] else 0.0
     print(f"Expected:{actual[i]:3d} Actual:{predictions[i]:3d} ")
 
-print(accuracy/len(dataset))
+print(accuracy/len(dataset)_
