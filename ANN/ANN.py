@@ -10,8 +10,8 @@ neural_net = []
 training_dataset, test_dataset = [],[]
 training_set, validation_set = [],[]
 training_mse, validation_mse = [],[]
-learning_rate = 0.5
-epochs = 150
+learning_rate = 0.05
+epochs = 1500
 
 # Create dataset from file
 def create_dataset(filename, dataset):
@@ -121,8 +121,8 @@ def train_nn(dataset, arr):
             update_weights(row)
 
         if (epoch%10 == 0):
-            mean_square_error(dataset, arr)
-            # print(f"Mean Squared Error: {mse}")
+            mse = mean_square_error(dataset, arr)
+            print(f"Mean Squared Error: {mse}")
 
 
 # Get mse for the current epoch
@@ -136,7 +136,7 @@ def mean_square_error(dataset, arr):
 
     mse = round(mse/len(dataset), 10)
     arr.append(mse)
-    # return mse
+    return mse
 
 # Make predictions after adjusting weights
 def predict(row):
