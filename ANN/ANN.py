@@ -10,8 +10,8 @@ neural_net = []
 training_dataset, test_dataset = [],[]
 training_set, validation_set = [],[]
 training_mse, validation_mse = [],[]
-learning_rate = 0.05
-epochs = 1500
+learning_rate = 0.002
+epochs = 2000
 
 # Create dataset from file
 def create_dataset(filename, dataset):
@@ -103,9 +103,11 @@ def back_propagation(row, expected):
         
 
 # Train nn across epochs
-def train_nn(dataset, arr):
+def train_nn(tra_dataset, tes_dataset, tra_arr, tes_arr):
     for epoch in range(epochs):
-        for row in dataset:
+        tra_mse = 0.0
+        tes_mse = 0.0
+        for row in tra_dataset:
             forward_propagation(row)
 
             expected_vector = [0.1, 0.1, 0.1, 0.1]
@@ -114,9 +116,12 @@ def train_nn(dataset, arr):
             back_propagation(row, expected_vector)
 
         if (epoch%10 == 0):
-            mse = mean_square_error(dataset, arr)
-            print(f"Mean Squared Error: {mse}")
-
+            tra_mse = mean_square_error(tra_dataset, tra_arr)
+            tes_mse = mean_square_error(tes_dataset, tes_arr)
+    
+            print(f"Mean Squared Error on Training Set: {tra_mse}")
+            print(f"Mean Squared Error on Training Set: {tes_mse}")
+            print(f"Epoch                             : {epoch}\n")
 
 # Get mse for the current epoch
 def mean_square_error(dataset, arr):
@@ -150,9 +155,9 @@ def main():
     initialize_neural_network(64, 8, 4)
     training_rows = round(len(training_dataset)*0.8)
     training_set = training_dataset[:training_rows]
-    # validation_set = training_dataset[training_rows:]
+    validation_set = training_dataset[training_rows:]
 
-    train_nn(training_set, training_mse)
+    train_nn(training_set, validation_set, training_mse, validation_mse)
 
     accuracy = 0.0
     for row in test_dataset:
