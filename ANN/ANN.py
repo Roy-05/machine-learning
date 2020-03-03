@@ -76,34 +76,31 @@ def sigmoid_prime(y):
 def back_propagation(row, expected):
     for i in reversed(range(len(neural_net))):
         layer = neural_net[i]
-        inputs = row[:-1]
-        if(i != 0):
-            inputs = [neuron['output'] for neuron in neural_net[i-1]]
-
-        for neuron,j in zip(layer,range(len(layer))):    
-            # Case: Output layer
-            if i == (len(neural_net) - 1):
+        inputs = row[:-1] if i==0 else [neuron['output'] for neuron in neural_net[i-1]]
+ 
+        # Case: Output layer
+        if i == (len(neural_net) - 1):
+            for neuron,j in zip(layer,range(len(layer))):   
                 error = expected[j] - neuron["output"]
                 neuron['delta'] = error * sigmoid_prime(neuron['output'])
-            else:
+
+                # Update weights
+                for k in range(len(inputs)):
+                    neuron['w'][k] += learning_rate * neuron['delta'] * inputs[k]
+                neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
+        else:
+            for neuron,j in zip(layer,range(len(layer))):   
                 error = 0.0
                 for next_layer_neuron in neural_net[i+1]:
                     error += next_layer_neuron['w'][j] * next_layer_neuron['delta']
-                    
+
                 neuron['delta'] = error * sigmoid_prime(neuron['output'])
-
-
-# Update weights on the basis of results from back propagation
-def update_weights(row):
-    for i in range(len(neural_net)):
-        inputs = row[:-1]
-        if(i != 0):
-            inputs = [neuron['output'] for neuron in neural_net[i-1]]
-        for neuron in neural_net[i]:
-            for j in range(len(inputs)):
-                neuron['w'][j] += learning_rate * neuron['delta'] * inputs[j]
-            neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
-
+                
+                # Update weights
+                for k in range(len(inputs)):
+                    neuron['w'][k] += learning_rate * neuron['delta'] * inputs[k]
+                neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
+        
 
 # Train nn across epochs
 def train_nn(dataset, arr):
@@ -115,7 +112,6 @@ def train_nn(dataset, arr):
             expected_vector[row[-1]] = 0.9
 
             back_propagation(row, expected_vector)
-            update_weights(row)
 
         if (epoch%10 == 0):
             mse = mean_square_error(dataset, arr)
