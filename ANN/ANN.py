@@ -10,8 +10,8 @@ neural_net = []
 training_dataset, test_dataset = [],[]
 training_set, validation_set = [],[]
 training_mse, validation_mse = [],[]
-learning_rate = 0.002
-epochs = 2000
+learning_rate = 0.2
+epochs = 1500
 
 # Create dataset from file
 def create_dataset(filename, dataset):
@@ -77,29 +77,23 @@ def back_propagation(row, expected):
     for i in reversed(range(len(neural_net))):
         layer = neural_net[i]
         inputs = row[:-1] if i==0 else [neuron['output'] for neuron in neural_net[i-1]]
- 
-        # Case: Output layer
-        if i == (len(neural_net) - 1):
-            for neuron,j in zip(layer,range(len(layer))):   
+
+        for neuron,j in zip(layer,range(len(layer))):  
+            # Case: Output layer
+            if i == (len(neural_net) - 1):
                 error = expected[j] - neuron["output"]
                 neuron['delta'] = error * sigmoid_prime(neuron['output'])
-
-                # Update weights
-                for k in range(len(inputs)):
-                    neuron['w'][k] += learning_rate * neuron['delta'] * inputs[k]
-                neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
-        else:
-            for neuron,j in zip(layer,range(len(layer))):   
+            else:
                 error = 0.0
                 for next_layer_neuron in neural_net[i+1]:
                     error += next_layer_neuron['w'][j] * next_layer_neuron['delta']
 
                 neuron['delta'] = error * sigmoid_prime(neuron['output'])
                 
-                # Update weights
-                for k in range(len(inputs)):
-                    neuron['w'][k] += learning_rate * neuron['delta'] * inputs[k]
-                neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
+            # Update weights
+            for k in range(len(inputs)):
+                neuron['w'][k] += learning_rate * neuron['delta'] * inputs[k]
+            neuron['w'][-1] += learning_rate * neuron['delta'] # Update Bias
         
 
 # Train nn across epochs
@@ -119,9 +113,9 @@ def train_nn(tra_dataset, tes_dataset, tra_arr, tes_arr):
             tra_mse = mean_square_error(tra_dataset, tra_arr)
             tes_mse = mean_square_error(tes_dataset, tes_arr)
     
-            print(f"Mean Squared Error on Training Set: {tra_mse}")
-            print(f"Mean Squared Error on Training Set: {tes_mse}")
-            print(f"Epoch                             : {epoch}\n")
+            print(f"Mean Squared Error on Training   Set: {tra_mse}")
+            print(f"Mean Squared Error on Validation Set: {tes_mse}")
+            print(f"Epoch                               : {epoch}\n")
 
 # Get mse for the current epoch
 def mean_square_error(dataset, arr):
@@ -166,6 +160,6 @@ def main():
         accuracy += 1.0 if actual == predicted else 0.0
         # print(f"Expected:{actual:2d} Actual:{predicted:2d}")
 
-    print(f"\nAccuracy: {accuracy/len(test_dataset):2.5f}\n")
+    print(f"\nAccuracy: {(accuracy/len(test_dataset))*100:5.4f}%\n")
     
 main()
