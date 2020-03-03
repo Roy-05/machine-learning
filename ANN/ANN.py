@@ -76,22 +76,19 @@ def sigmoid_prime(y):
 def back_propagation(expected):
     for i in reversed(range(len(neural_net))):
         layer = neural_net[i]
-        errors = []
 
         # Case: Output layer
         if i == (len(neural_net) - 1):
             for neuron,j in zip(layer,range(len(layer))):
-                errors.append(expected[j] - neuron["output"])
+                error = expected[j] - neuron["output"]
+                neuron['delta'] = error * sigmoid_prime(neuron['output'])
         else:
             for neuron,j in zip(layer,range(len(layer))):
                 error = 0.0
                 for next_layer_neuron in neural_net[i+1]:
                     error += next_layer_neuron['w'][j] * next_layer_neuron['delta']
-                errors.append(error)
-        
-        for j in range(len(layer)):
-            neuron = layer[j]
-            neuron['delta'] = errors[j] * sigmoid_prime(neuron['output'])
+
+                neuron['delta'] = error * sigmoid_prime(neuron['output'])
 
 
 # Update weights on the basis of results from back propagation
