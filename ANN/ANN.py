@@ -73,21 +73,23 @@ def sigmoid_prime(y):
 
 
 # Back propagate errors
-def back_propagation(expected):
+def back_propagation(row, expected):
     for i in reversed(range(len(neural_net))):
         layer = neural_net[i]
+        inputs = row[:-1]
+        if(i != 0):
+            inputs = [neuron['output'] for neuron in neural_net[i-1]]
 
-        # Case: Output layer
-        if i == (len(neural_net) - 1):
-            for neuron,j in zip(layer,range(len(layer))):
+        for neuron,j in zip(layer,range(len(layer))):    
+            # Case: Output layer
+            if i == (len(neural_net) - 1):
                 error = expected[j] - neuron["output"]
                 neuron['delta'] = error * sigmoid_prime(neuron['output'])
-        else:
-            for neuron,j in zip(layer,range(len(layer))):
+            else:
                 error = 0.0
                 for next_layer_neuron in neural_net[i+1]:
                     error += next_layer_neuron['w'][j] * next_layer_neuron['delta']
-
+                    
                 neuron['delta'] = error * sigmoid_prime(neuron['output'])
 
 
@@ -112,7 +114,7 @@ def train_nn(dataset, arr):
             expected_vector = [0.1, 0.1, 0.1, 0.1]
             expected_vector[row[-1]] = 0.9
 
-            back_propagation(expected_vector)
+            back_propagation(row, expected_vector)
             update_weights(row)
 
         if (epoch%10 == 0):
