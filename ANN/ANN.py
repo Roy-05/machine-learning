@@ -80,17 +80,15 @@ def back_propagation(expected):
 
         # Case: Output layer
         if i == (len(neural_net) - 1):
-            for j in range(len(layer)):
-                neuron = layer[j]
+            for neuron,j in zip(layer,range(len(layer))):
                 errors.append(expected[j] - neuron["output"])
         else:
-            for j in range(len(layer)):
+            for neuron,j in zip(layer,range(len(layer))):
                 error = 0.0
-                for neuron in neural_net[i+1]:
-                    error += neuron['w'][j] * neuron['delta']
+                for next_layer_neuron in neural_net[i+1]:
+                    error += next_layer_neuron['w'][j] * next_layer_neuron['delta']
                 errors.append(error)
         
-
         for j in range(len(layer)):
             neuron = layer[j]
             neuron['delta'] = errors[j] * sigmoid_prime(neuron['output'])
